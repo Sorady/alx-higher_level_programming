@@ -1,40 +1,32 @@
 #!/usr/bin/python3
-"""
-reads stdin line by line and computes metrics
-"""
+"""Script that reads stdin line by line and computes metrics."""
 import sys
 
-file_size = 0
-status_tally = {"200": 0, "301": 0, "400": 0, "401": 0,
-                "403": 0, "404": 0, "405": 0, "500": 0}
-i = 0
+status_codes = [200, 301, 400, 401, 403, 404, 405, 500]
+status_count = {code: 0 for code in status_codes}
+total_size = 0
+line_count = 0
+
 try:
     for line in sys.stdin:
-        tokens = line.split()
-        if len(tokens) >= 2:
-            a = i
-            if tokens[-2] in status_tally:
-                status_tally[tokens[-2]] += 1
-                i += 1
-            try:
-                file_size += int(tokens[-1])
-                if a == i:
-                    i += 1
-            except FileNotFoundError:
-                if a == i:
-                    continue
-        if i % 10 == 0:
-            print("File size: {:d}".format(file_size))
-            for key, value in sorted(status_tally.items()):
-                if value:
-                    print("{:s}: {:d}".format(key, value))
-    print("File size: {:d}".format(file_size))
-    for key, value in sorted(status_tally.items()):
-        if value:
-            print("{:s}: {:d}".format(key, value))
-
+        line_count += 1
+        data = line.split()
+        try:
+            status_code = int(data[-2])
+            if status_code in status_codes:
+                status_count[status_code] += 1
+            total_size += int(data[-1])
+        except:
+            pass
+        if line_count % 10 == 0:
+            print("File size: {}".format(total_size))
+            for code in sorted(status_codes):
+                if status_count[code]:
+                    print("{}: {}".format(code, status_count[code]))
 except KeyboardInterrupt:
-    print("File size: {:d}".format(file_size))
-    for key, value in sorted(status_tally.items()):
-        if value:
-            print("{:s}: {:d}".format(key, value))
+    pass
+finally:
+    print("File size: {}".format(total_size))
+    for code in sorted(status_codes):
+        if status_count[code]:
+            print("{}: {}".format(code, status_count[code]))
