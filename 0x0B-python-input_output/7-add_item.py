@@ -1,18 +1,16 @@
 #!/usr/bin/python3
-"""loads from.json file"""
-from os import path
-from sys import argv
+"""define script to add args to py list and save to file"""
+import sys
 
 
-save_to_json_file = __import__('7-save_to_json_file').save_to_json_file
-load_from_json_file = __import__('8-load_from_json_file').load_from_json_file
+if __name__ == "__main__":
+    save_to_json_file = __import__('7-save_to_json_file').save_to_json_file
+    load_from_json_file = \
+        __import__('8-load_from_json_file').load_from_json_file
 
-if path.exists('add_item.json'):
-    obj_json_file = load_from_json_file('add_item.json')
-else:
-    obj_json_file = []
-
-for i in range(1, len(argv)):
-    obj_json_file.append(argv[i])
-
-save_to_json_file(obj_json_file, 'add_item.json')
+    try:
+        items = load_from_json_file("add_item.json")
+    except FileNotFoundError:
+        items = []
+    items.extend(sys.argv[1:])
+    save_to_json_file(items, "add_item.json")
