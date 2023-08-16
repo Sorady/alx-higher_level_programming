@@ -1,7 +1,12 @@
-CREATE USER 'user_0d_1'@'localhost';
-GRANT ALL PRIVILEGES ON *.* TO 'user_0d_1'@'localhost';
+USE mysql;
 
-CREATE USER 'user_0d_2'@'localhost';
-GRANT ALL PRIVILEGES ON *.* TO 'user_0d_2'@'localhost';
-
-SELECT * FROM mysql.user WHERE User IN ('user_0d_1', 'user_0d_2') AND Host = 'localhost';
+SELECT
+  CONCAT('Grants for ', user, '@', host) AS grants,
+  privilege_type
+FROM
+  user_privileges
+WHERE
+  user IN ('user_0d_1', 'user_0d_2')
+ORDER BY
+  user,
+  host;
